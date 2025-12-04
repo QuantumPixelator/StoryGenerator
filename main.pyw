@@ -56,7 +56,7 @@ class StoryGenerator:
         self.save_btn.pack(side="left", padx=30)
 
         # Story display
-        self.story_text = ctk.CTkTextbox(main, wrap="word", font=("Georgia", 15), padx=20, pady=20)
+        self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=14), padx=20, pady=20)
         self.story_text.pack(fill="both", expand=True, padx=80, pady=(10, 40))
 
         # Tag configs removed as customtkinter forbids font option in tag_config
