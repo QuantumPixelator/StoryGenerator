@@ -16,6 +16,7 @@ class StoryGenerator:
         self.root.title("Story Generator")
         self.root.geometry("800x700")
         self.root.minsize(800, 700)
+        self.root.maxsize(800, 700)
 
         self.load_genres()
 
@@ -281,7 +282,7 @@ class StoryGenerator:
                            "Fables", "Nursery Rhymes", "Fairy Tales", "Mythology", "Folklore", 
                            "Satire", "Gothic", "Dystopian", "Utopian", "Steampunk", "Cyberpunk",
                            "Urban Fantasy", "Dark Fantasy", "Epic Fantasy", "Paranormal", "Supernatural",
-                           "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction", "Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
+                           "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction","Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
             self.save_genres()
 
     def save_genres(self):
@@ -299,9 +300,7 @@ class StoryGenerator:
         list_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
         scrollbar = tk.Scrollbar(list_frame, orient="vertical", bg="#555555", activebackground="#777777", troughcolor="#2b2b2b")
-        self.genre_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE, bg="#2b2b2b", fg="white", 
-                                        selectbackground="#1f6aa5", font=("Arial", 12),
-                                        yscrollcommand=scrollbar.set, highlightthickness=0)
+        self.genre_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE, bg="#2b2b2b", fg="white", selectbackground="#1f6aa5", font=("Arial", 12), yscrollcommand=scrollbar.set, highlightthickness=0)
         scrollbar.config(command=self.genre_listbox.yview)
         
         self.genre_listbox.pack(side="left", fill="both", expand=True)
