@@ -6,12 +6,14 @@ A desktop application that generates creative stories using AI. Choose from vari
 
 ## Features
 
-- 30+ story genres including Horror, Fantasy, Science Fiction, Romance, Fables, Nursery Rhymes, and more
-- Adjustable word count (100-1000 words)
+- 40+ story genres including Horror, Fantasy, Science Fiction, Romance, Fables, Nursery Rhymes, and more
+- Customizable genre list - add, remove, and manage your own genres
+- Adjustable word count (100-1500 words) with 10-word increments
 - Stories formatted with **bold** emphasis and *italic* text for thoughts/sounds
 - Proper paragraph breaks for easy reading
-- Save generated stories as Markdown files
-- Dark-themed modern UI
+- Save generated stories in multiple formats: Markdown, RTF, DOCX, Text, or PDF
+- Vertical scrollbars in the story area when needed
+- Dark-themed modern UI with compact controls
 
 ## Prerequisites
 
@@ -51,7 +53,12 @@ Groq offers free access to powerful language models with generous rate limits, p
 
 3. Install required packages:
    ```bash
-   pip install customtkinter requests
+   pip install -r requirements.txt
+   ```
+   
+   Or manually:
+   ```bash
+   pip install customtkinter requests python-docx reportlab
    ```
 4. Add your Groq API key to `api_key.json` (see above)
 
@@ -82,20 +89,25 @@ Groq offers free access to powerful language models with generous rate limits, p
    ```
 
 3. Select a genre from the dropdown
-4. Adjust the word count slider
+4. Adjust the word count slider (increments of 10)
 5. Click "Generate Story"
-6. Optionally save the story as a Markdown file
+6. Optionally save the story in your preferred format (Markdown, RTF, DOCX, Text, or PDF)
 
 ## Files
 
 - `main.pyw` - Main application file
 - `api_key.json` - Store your Groq API key here
+- `genres.json` - Customizable list of story genres
+- `requirements.txt` - Python dependencies
 - `README.md` - This file
 - `screenshot.png` - Application screenshot
 
 ## Technologies Used
 
 - **customtkinter** - Modern UI framework for Python
+- **requests** - HTTP library for API calls
+- **python-docx** - Library for creating DOCX files
+- **reportlab** - Library for generating PDF files
 - **Groq API** - Fast, free AI inference using Llama 3.3 70B model
 - **Python 3** - Core programming language
 

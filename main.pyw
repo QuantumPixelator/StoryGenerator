@@ -4,6 +4,8 @@ import json
 from datetime import date
 from tkinter import filedialog
 import re
+import os
+import tkinter as tk
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -15,49 +17,50 @@ class StoryGenerator:
         self.root.geometry("800x700")
         self.root.minsize(800, 700)
 
-        self.genres = ["Horror", "Thriller", "Mystery", "Detective/Noir", "Fantasy", "Science Fiction",
-                       "Romance", "Historical Fiction", "Western", "Adventure", "Comedy", "Drama",
-                       "Fables", "Nursery Rhymes", "Fairy Tales", "Mythology", "Folklore", 
-                       "Satire", "Gothic", "Dystopian", "Utopian", "Steampunk", "Cyberpunk",
-                       "Urban Fantasy", "Dark Fantasy", "Epic Fantasy", "Paranormal", "Supernatural",
-                       "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction", "Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
+        self.load_genres()
 
         # Main container
         main = ctk.CTkFrame(self.root)
         main.pack(fill="both", expand=True, padx=30, pady=30)
 
         # Title
-        ctk.CTkLabel(main, text="Story Generator", font=ctk.CTkFont(size=36, weight="bold")).pack(pady=(0, 40))
+        ctk.CTkLabel(main, text="Story Generator", font=ctk.CTkFont(size=36, weight="bold")).pack(pady=(0, 30))
 
         # Genre
-        ctk.CTkLabel(main, text="Select Genre", font=ctk.CTkFont(size=14)).pack(anchor="w", padx=100)
-        self.genre_var = ctk.StringVar(value=self.genres[0])
-        ctk.CTkComboBox(main, values=self.genres, variable=self.genre_var, width=350, height=35,
-                        font=ctk.CTkFont(size=12)).pack(pady=(8, 20))
+        genre_frame = ctk.CTkFrame(main, fg_color="transparent")
+        genre_frame.pack(pady=(5, 15))
+        ctk.CTkLabel(genre_frame, text="Select Genre", font=ctk.CTkFont(size=14)).pack(side="left", padx=(0,10))
+        self.genre_var = ctk.StringVar(value=self.genres[0] if self.genres else "")
+        self.genre_combo = ctk.CTkComboBox(genre_frame, values=self.genres, variable=self.genre_var, width=250, height=30,
+                        font=ctk.CTkFont(size=11))
+        self.genre_combo.pack(side="left")
+        ctk.CTkButton(genre_frame, text="⚙️", command=self.manage_genres, width=30, height=30,
+                      font=ctk.CTkFont(size=12)).pack(side="left", padx=(5,0))
 
         # Word count
         ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=14)).pack(anchor="w", padx=100)
         self.slider_var = ctk.DoubleVar(value=500)
-        slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=140, variable=self.slider_var, width=450)
+        slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=140, variable=self.slider_var, width=400)
         slider.pack(pady=(10, 15))
         self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=16, weight="bold"))
-        self.word_label.pack(pady=(0, 20))
+        self.word_label.pack(pady=(0, 15))
         slider.configure(command=lambda v: self.word_label.configure(text=f"{int(float(v))} words"))
 
         # Buttons
         btn_frame = ctk.CTkFrame(main, fg_color="transparent")
-        btn_frame.pack(pady=15)
+        btn_frame.pack(pady=10)
         ctk.CTkButton(btn_frame, text="Generate Story", command=self.generate_story,
-                      fg_color="#EF233C", hover_color="#D90429", width=200, height=45,
-                      font=ctk.CTkFont(size=14, weight="bold")).pack(side="left", padx=30)
-        self.save_btn = ctk.CTkButton(btn_frame, text="Save as Markdown", command=self.save_as_markdown,
-                                      fg_color="#2D936C", hover_color="#34B679", width=200, height=45,
-                                      font=ctk.CTkFont(size=14, weight="bold"), state="disabled")
+                      fg_color="#EF233C", hover_color="#D90429", width=180, height=40,
+                      font=ctk.CTkFont(size=13, weight="bold")).pack(side="left", padx=30)
+        self.save_btn = ctk.CTkButton(btn_frame, text="Save Story", command=self.save_story,
+                                      fg_color="#2D936C", hover_color="#34B679", width=180, height=40,
+                                      font=ctk.CTkFont(size=13, weight="bold"), state="disabled")
         self.save_btn.pack(side="left", padx=30)
 
         # Story display
-        self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=14), padx=20, pady=20)
-        self.story_text.pack(fill="both", expand=True, padx=60, pady=(10, 20))
+        self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=14), padx=20, pady=20,
+                                         scrollbar_button_color="#555555", scrollbar_button_hover_color="#777777")
+        self.story_text.pack(fill="both", expand=True, padx=50, pady=(5, 15))
 
         # Tag configs removed as customtkinter forbids font option in tag_config
 
@@ -119,11 +122,13 @@ class StoryGenerator:
                 continue
                 
             # Split paragraph by markdown formatting
-            parts = re.split(r'(\*\*.*?\*\*|\*.*?\*)', paragraph)
+            parts = re.split(r'(\*\*.*?\*\*|__.*?__|\*.*?\*|_\*?._\*?)', paragraph)
             for part in parts:
                 if part.startswith("**") and part.endswith("**"):
                     self.story_text.insert("end", part[2:-2], "bold")
-                elif part.startswith("*") and part.endswith("*") and not part.startswith("**"):
+                elif part.startswith("__") and part.endswith("__"):
+                    self.story_text.insert("end", part[2:-2], "bold")
+                elif (part.startswith("*") and part.endswith("*") and not part.startswith("**")) or (part.startswith("_") and part.endswith("_") and not part.startswith("__")):
                     self.story_text.insert("end", part[1:-1], "italic")
                 else:
                     self.story_text.insert("end", part)
@@ -132,32 +137,210 @@ class StoryGenerator:
             if i < len(paragraphs) - 1:
                 self.story_text.insert("end", "\n\n")
 
-    def save_as_markdown(self):
+    def save_story(self):
         today = date.today().strftime("%Y-%m-%d")
-        filename = f"{self.current_genre}_{self.current_words}w_{today}.md"
+
+        # Extract title from first line of story
+        lines = self.current_story.split('\n', 1)
+        if len(lines) > 1 and lines[0].strip():
+            title = lines[0].strip()
+            content = lines[1].strip()
+        else:
+            title = f"{self.current_genre} Story"
+            content = self.current_story
+
+        # Sanitize title for filename
+        import re
+        safe_title = re.sub(r'[^\w\s-]', '', title).replace(' ', '_')
+        filename = f"{safe_title}_{self.current_words}w_{today}.md"
 
         path = filedialog.asksaveasfilename(
             initialfile=filename,
             defaultextension=".md",
-            filetypes=[("Markdown", "*.md"), ("Text", "*.txt")],
-            title="Save Story as Markdown"
+            filetypes=[("Markdown", "*.md"), ("RTF", "*.rtf"), ("DOCX", "*.docx"), ("Text", "*.txt"), ("PDF", "*.pdf")],
+            title="Save Story"
         )
-        if not path:
-            return
 
-        title = f"# {self.current_genre} Story\n\n**{self.current_words} words**\n\n---\n\n"
-        content = title + self.current_story
+        ext = os.path.splitext(path)[1].lower()
+
+        if ext == '.md':
+            content_full = f"# {title}\n\n**{self.current_words} words**\n\n---\n\n{content}"
+        elif ext == '.txt':
+            content_full = self.current_story
+        elif ext == '.rtf':
+            content_full = self.generate_rtf(content, title)
+        elif ext == '.docx':
+            self.save_as_docx(path, content, title)
+            self.save_btn.configure(text="Saved!")
+            self.root.after(2000, lambda: self.save_btn.configure(text="Save Story"))
+            return
+        elif ext == '.pdf':
+            self.save_as_pdf(path, content, title)
+            self.save_btn.configure(text="Saved!")
+            self.root.after(2000, lambda: self.save_btn.configure(text="Save Story"))
+            return
+        else:
+            content_full = self.current_story
 
         try:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
             self.save_btn.configure(text="Saved!")
-            self.root.after(2000, lambda: self.save_btn.configure(text="Save as Markdown"))
+            self.root.after(2000, lambda: self.save_btn.configure(text="Save Story"))
         except Exception as e:
             self.story_text.insert("end", f"\n\nSave failed: {e}")
 
+    def markdown_to_html(self, text):
+        import re
+        # Convert bold **text** or __text__ to <b>text</b>
+        text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
+        text = re.sub(r'__(.*?)__', r'<b>\1</b>', text)
+        # Convert italics *text* or _text_ to <i>text</i>
+        text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', text)
+        text = re.sub(r'_(.*?)_', r'<i>\1</i>', text)
+        return text
+
+    def generate_rtf(self, text, title):
+        # RTF generation with bold and italic formatting
+        rtf = r"{\rtf1\ansi\deff0{\fonttbl{\f0\fnil\fcharset0 Arial;}}\f0\fs24 "
+        rtf += r'\b ' + title + r'\b0\par '
+        rtf += r'\i ' + f"{self.current_words} words" + r'\i0\par \par '
+        paragraphs = text.split('\n\n')
+        for para in paragraphs:
+            if para.strip():
+                parts = re.split(r'(\*\*.*?\*\*|__.*?__|\*.*?\*|_\*?._\*?)', para)
+                for part in parts:
+                    if part.startswith("**") and part.endswith("**"):
+                        rtf += r'\b ' + part[2:-2] + r'\b0 '
+                    elif part.startswith("__") and part.endswith("__"):
+                        rtf += r'\b ' + part[2:-2] + r'\b0 '
+                    elif (part.startswith("*") and part.endswith("*") and not part.startswith("**")) or (part.startswith("_") and part.endswith("_") and not part.startswith("__")):
+                        rtf += r'\i ' + part[1:-1] + r'\i0 '
+                    else:
+                        rtf += part + ' '
+                rtf += r'\par '
+        rtf += r"}"
+        return rtf
+
+    def save_as_docx(self, path, text, title):
+        try:
+            from docx import Document
+            doc = Document()
+            doc.add_heading(title, 0)
+            doc.add_paragraph(f"{self.current_words} words").italic = True
+            paragraphs = text.split('\n\n')
+            for paragraph in paragraphs:
+                if paragraph.strip():
+                    p = doc.add_paragraph()
+                    parts = re.split(r'(\*\*.*?\*\*|__.*?__|\*.*?\*|_\*?._\*?)', paragraph)
+                    for part in parts:
+                        if part.startswith("**") and part.endswith("**"):
+                            p.add_run(part[2:-2]).bold = True
+                        elif part.startswith("__") and part.endswith("__"):
+                            p.add_run(part[2:-2]).bold = True
+                        elif (part.startswith("*") and part.endswith("*") and not part.startswith("**")) or (part.startswith("_") and part.endswith("_") and not part.startswith("__")):
+                            p.add_run(part[1:-1]).italic = True
+                        else:
+                            p.add_run(part)
+            doc.save(path)
+        except ImportError:
+            raise Exception("python-docx not installed. Install with: pip install python-docx")
+
+    def save_as_pdf(self, path, text, title):
+        try:
+            from reportlab.pdfgen import canvas
+            from reportlab.lib.pagesizes import letter
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.platypus import SimpleDocTemplate, Paragraph
+
+            doc = SimpleDocTemplate(path, pagesize=letter)
+            styles = getSampleStyleSheet()
+            story = []
+            story.append(Paragraph(f"<b>{title}</b>", styles['Heading1']))
+            story.append(Paragraph(f"<i>{self.current_words} words</i>", styles['Normal']))
+            text_html = self.markdown_to_html(text)
+            # Replace double newlines with paragraph breaks, single with <br/>
+            paragraphs = text_html.split('\n\n')
+            for para in paragraphs:
+                if para.strip():
+                    story.append(Paragraph(para.replace('\n', '<br/>'), styles['Normal']))
+            doc.build(story)
+        except ImportError:
+            raise Exception("reportlab not installed. Install with: pip install reportlab")
+
     def run(self):
         self.root.mainloop()
+
+    def load_genres(self):
+        try:
+            with open("genres.json", "r") as f:
+                self.genres = json.load(f)
+        except FileNotFoundError:
+            self.genres = ["Horror", "Thriller", "Mystery", "Detective/Noir", "Fantasy", "Science Fiction",
+                           "Romance", "Historical Fiction", "Western", "Adventure", "Comedy", "Drama",
+                           "Fables", "Nursery Rhymes", "Fairy Tales", "Mythology", "Folklore", 
+                           "Satire", "Gothic", "Dystopian", "Utopian", "Steampunk", "Cyberpunk",
+                           "Urban Fantasy", "Dark Fantasy", "Epic Fantasy", "Paranormal", "Supernatural",
+                           "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction", "Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
+            self.save_genres()
+
+    def save_genres(self):
+        with open("genres.json", "w") as f:
+            json.dump(self.genres, f, indent=2)
+
+    def manage_genres(self):
+        window = ctk.CTkToplevel(self.root)
+        window.title("Manage Genres")
+        window.geometry("400x300")
+        window.attributes("-topmost", True)  # Always on top
+        
+        # Listbox with scrollbar
+        list_frame = tk.Frame(window, bg="#2b2b2b")
+        list_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        scrollbar = tk.Scrollbar(list_frame, orient="vertical", bg="#555555", activebackground="#777777", troughcolor="#2b2b2b")
+        self.genre_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE, bg="#2b2b2b", fg="white", 
+                                        selectbackground="#1f6aa5", font=("Arial", 12),
+                                        yscrollcommand=scrollbar.set, highlightthickness=0)
+        scrollbar.config(command=self.genre_listbox.yview)
+        
+        self.genre_listbox.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        for genre in self.genres:
+            self.genre_listbox.insert(tk.END, genre)
+        
+        # Control frame
+        control_frame = ctk.CTkFrame(window, fg_color="transparent")
+        control_frame.pack(fill="x", padx=10, pady=(0,10))
+        
+        self.new_genre_entry = ctk.CTkEntry(control_frame, placeholder_text="New genre")
+        self.new_genre_entry.pack(side="left", fill="x", expand=True)
+        
+        ctk.CTkButton(control_frame, text="Add", command=self.add_genre).pack(side="left", padx=(5,0))
+        ctk.CTkButton(control_frame, text="Delete", command=self.delete_genre, fg_color="#EF233C").pack(side="left", padx=(5,0))
+
+    def add_genre(self):
+        new_genre = self.new_genre_entry.get().strip()
+        if new_genre and new_genre not in self.genres:
+            self.genres.append(new_genre)
+            self.save_genres()
+            self.genre_listbox.insert(tk.END, new_genre)
+            self.genre_combo.configure(values=self.genres)
+            self.new_genre_entry.delete(0, tk.END)
+
+    def delete_genre(self):
+        selected = self.genre_listbox.curselection()
+        if selected:
+            index = selected[0]
+            del self.genres[index]
+            self.save_genres()
+            self.genre_listbox.delete(index)
+            self.genre_combo.configure(values=self.genres)
+            if self.genres:
+                self.genre_var.set(self.genres[0])
+            else:
+                self.genre_var.set("")
 
 if __name__ == "__main__":
     app = StoryGenerator()
