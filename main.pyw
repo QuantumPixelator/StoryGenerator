@@ -20,7 +20,7 @@ class StoryGenerator:
                        "Fables", "Nursery Rhymes", "Fairy Tales", "Mythology", "Folklore", 
                        "Satire", "Gothic", "Dystopian", "Utopian", "Steampunk", "Cyberpunk",
                        "Urban Fantasy", "Dark Fantasy", "Epic Fantasy", "Paranormal", "Supernatural",
-                       "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction"]
+                       "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction", "Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
 
         # Main container
         main = ctk.CTkFrame(self.root)
@@ -38,7 +38,7 @@ class StoryGenerator:
         # Word count
         ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=16)).pack(anchor="w", padx=100)
         self.slider_var = ctk.DoubleVar(value=500)
-        slider = ctk.CTkSlider(main, from_=100, to=1000, number_of_steps=18, variable=self.slider_var, width=500)
+        slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=18, variable=self.slider_var, width=500)
         slider.pack(pady=(10, 15))
         self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=18, weight="bold"))
         self.word_label.pack(pady=(0, 40))
@@ -70,7 +70,7 @@ class StoryGenerator:
                   "Format with multiple paragraphs separated by blank lines (double newlines). "
                   "Start new paragraphs at natural breaks: scene changes, dialogue, shifts in time/location. "
                   "Use **bold** for strong emphasis and *italics* for thoughts or sounds. "
-                  "Strong plot, vivid characters, satisfying twist ending. No title — start directly with the story.")
+                  "Strong plot, vivid characters, satisfying twist ending. Add a fitting title.")
 
         self.story_text.delete("1.0", "end")
         self.story_text.insert("1.0", "Generating your story...")
