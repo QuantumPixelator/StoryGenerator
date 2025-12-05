@@ -30,34 +30,34 @@ class StoryGenerator:
         ctk.CTkLabel(main, text="Story Generator", font=ctk.CTkFont(size=36, weight="bold")).pack(pady=(0, 40))
 
         # Genre
-        ctk.CTkLabel(main, text="Select Genre", font=ctk.CTkFont(size=16)).pack(anchor="w", padx=100)
+        ctk.CTkLabel(main, text="Select Genre", font=ctk.CTkFont(size=14)).pack(anchor="w", padx=100)
         self.genre_var = ctk.StringVar(value=self.genres[0])
-        ctk.CTkComboBox(main, values=self.genres, variable=self.genre_var, width=400, height=40,
-                        font=ctk.CTkFont(size=14)).pack(pady=(8, 30))
+        ctk.CTkComboBox(main, values=self.genres, variable=self.genre_var, width=350, height=35,
+                        font=ctk.CTkFont(size=12)).pack(pady=(8, 20))
 
         # Word count
-        ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=16)).pack(anchor="w", padx=100)
+        ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=14)).pack(anchor="w", padx=100)
         self.slider_var = ctk.DoubleVar(value=500)
-        slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=18, variable=self.slider_var, width=500)
+        slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=140, variable=self.slider_var, width=450)
         slider.pack(pady=(10, 15))
-        self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=18, weight="bold"))
-        self.word_label.pack(pady=(0, 40))
+        self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=16, weight="bold"))
+        self.word_label.pack(pady=(0, 20))
         slider.configure(command=lambda v: self.word_label.configure(text=f"{int(float(v))} words"))
 
         # Buttons
         btn_frame = ctk.CTkFrame(main, fg_color="transparent")
-        btn_frame.pack(pady=20)
+        btn_frame.pack(pady=15)
         ctk.CTkButton(btn_frame, text="Generate Story", command=self.generate_story,
-                      fg_color="#EF233C", hover_color="#D90429", width=240, height=50,
-                      font=ctk.CTkFont(size=16, weight="bold")).pack(side="left", padx=30)
+                      fg_color="#EF233C", hover_color="#D90429", width=200, height=45,
+                      font=ctk.CTkFont(size=14, weight="bold")).pack(side="left", padx=30)
         self.save_btn = ctk.CTkButton(btn_frame, text="Save as Markdown", command=self.save_as_markdown,
-                                      fg_color="#2D936C", hover_color="#34B679", width=240, height=50,
-                                      font=ctk.CTkFont(size=16, weight="bold"), state="disabled")
+                                      fg_color="#2D936C", hover_color="#34B679", width=200, height=45,
+                                      font=ctk.CTkFont(size=14, weight="bold"), state="disabled")
         self.save_btn.pack(side="left", padx=30)
 
         # Story display
         self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=14), padx=20, pady=20)
-        self.story_text.pack(fill="both", expand=True, padx=80, pady=(10, 40))
+        self.story_text.pack(fill="both", expand=True, padx=60, pady=(10, 20))
 
         # Tag configs removed as customtkinter forbids font option in tag_config
 
