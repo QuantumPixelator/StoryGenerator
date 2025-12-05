@@ -1,0 +1,4 @@
+customtkinter
+requests
+python-docx
+reportlab
