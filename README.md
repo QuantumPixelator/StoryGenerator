@@ -6,7 +6,7 @@ A desktop application that generates creative stories using AI. Choose from vari
 
 ## Features
 
-- 40+ story genres including Horror, Fantasy, Science Fiction, Romance, Fables, Nursery Rhymes, and more
+- 30+ story genres including Horror, Fantasy, Science Fiction, Romance, and many more
 - Customizable genre list - add, remove, and manage your own genres
 - Adjustable word count (100-1500 words) with 10-word increments
 - Stories formatted with **bold** emphasis and *italic* text for thoughts/sounds
@@ -14,6 +14,15 @@ A desktop application that generates creative stories using AI. Choose from vari
 - Save generated stories in multiple formats: Markdown, RTF, DOCX, Text, or PDF
 - Vertical scrollbars in the story area when needed
 - Dark-themed modern UI with compact controls
+
+## Story Variety
+
+To ensure each generated story is unique and creative, the application uses advanced AI parameters:
+
+- **High Temperature Setting**: Configured at 1.2 for more imaginative and varied story outputs
+- **Random Seeds**: Each generation request includes a unique random seed, which helps the AI model produce different results even with similar prompts
+
+This combination helps prevent repetitive stories and provides fresh, original content each time you generate a new story.
 
 ## Prerequisites
 

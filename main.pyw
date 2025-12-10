@@ -6,9 +6,10 @@ from tkinter import filedialog
 import re
 import os
 import tkinter as tk
+import random
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
+ctk.set_default_color_theme("green")
 
 class StoryGenerator:
     def __init__(self):
@@ -25,51 +26,49 @@ class StoryGenerator:
         main.pack(fill="both", expand=True, padx=30, pady=30)
 
         # Title
-        ctk.CTkLabel(main, text="Story Generator", font=ctk.CTkFont(size=36, weight="bold")).pack(pady=(0, 30))
+        ctk.CTkLabel(main, text="Story Generator", font=ctk.CTkFont(size=26, weight="bold")).pack(pady=(0, 25))
 
         # Genre
         genre_frame = ctk.CTkFrame(main, fg_color="transparent")
-        genre_frame.pack(pady=(5, 15))
-        ctk.CTkLabel(genre_frame, text="Select Genre", font=ctk.CTkFont(size=14)).pack(side="left", padx=(0,10))
+        genre_frame.pack(pady=(5, 10))
+        ctk.CTkLabel(genre_frame, text="Select Genre", font=ctk.CTkFont(size=12)).pack(side="left", padx=(0,10))
         self.genre_var = ctk.StringVar(value=self.genres[0] if self.genres else "")
         self.genre_combo = ctk.CTkComboBox(genre_frame, values=self.genres, variable=self.genre_var, width=250, height=30,
-                        font=ctk.CTkFont(size=11))
+                        font=ctk.CTkFont(size=12))
         self.genre_combo.pack(side="left")
         ctk.CTkButton(genre_frame, text="⚙️", command=self.manage_genres, width=30, height=30,
                       font=ctk.CTkFont(size=12)).pack(side="left", padx=(5,0))
 
         # Word count
-        ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=14)).pack(anchor="w", padx=100)
+        ctk.CTkLabel(main, text="Word Count", font=ctk.CTkFont(size=12)).pack(anchor="w", padx=100)
         self.slider_var = ctk.DoubleVar(value=500)
         slider = ctk.CTkSlider(main, from_=100, to=1500, number_of_steps=140, variable=self.slider_var, width=400)
-        slider.pack(pady=(10, 15))
-        self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=16, weight="bold"))
-        self.word_label.pack(pady=(0, 15))
+        slider.pack(pady=(10, 10))
+        self.word_label = ctk.CTkLabel(main, text="500 words", font=ctk.CTkFont(size=14, weight="bold"))
+        self.word_label.pack(pady=(0, 10))
         slider.configure(command=lambda v: self.word_label.configure(text=f"{int(float(v))} words"))
 
         # Buttons
         btn_frame = ctk.CTkFrame(main, fg_color="transparent")
-        btn_frame.pack(pady=10)
+        btn_frame.pack(pady=5)
         ctk.CTkButton(btn_frame, text="Generate Story", command=self.generate_story,
-                      fg_color="#EF233C", hover_color="#D90429", width=180, height=40,
-                      font=ctk.CTkFont(size=13, weight="bold")).pack(side="left", padx=30)
+                      fg_color="#2364EF", hover_color="#0407D9", width=150, height=30,
+                      font=ctk.CTkFont(size=11, weight="bold")).pack(side="left", padx=30)
         self.save_btn = ctk.CTkButton(btn_frame, text="Save Story", command=self.save_story,
-                                      fg_color="#2D936C", hover_color="#34B679", width=180, height=40,
-                                      font=ctk.CTkFont(size=13, weight="bold"), state="disabled")
+                                      fg_color="#2D936C", hover_color="#1E6134", width=150, height=30,
+                                      font=ctk.CTkFont(size=11, weight="bold"), state="disabled")
         self.save_btn.pack(side="left", padx=30)
 
         # Story display
-        self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=14), padx=20, pady=20,
+        self.story_text = ctk.CTkTextbox(main, wrap="word", font=ctk.CTkFont(size=16), padx=20, pady=20,
                                          scrollbar_button_color="#555555", scrollbar_button_hover_color="#777777")
-        self.story_text.pack(fill="both", expand=True, padx=50, pady=(5, 15))
-
-        # Tag configs removed as customtkinter forbids font option in tag_config
+        self.story_text.pack(fill="both", expand=True, padx=50, pady=(5, 10))
 
     def generate_story(self):
         genre = self.genre_var.get()
         words = int(self.slider_var.get())
 
-        prompt = (f"Write a complete {genre.lower()} story that is up to {words} words long (count carefully). "
+        prompt = (f"Write a complete, original {genre.lower()} story that is up to {words} words long (count carefully). "
                   "CRITICAL: The story MUST have a proper ending - do not stop mid-sentence or mid-thought. "
                   "Format with multiple paragraphs separated by blank lines (double newlines). "
                   "Start new paragraphs at natural breaks: scene changes, dialogue, shifts in time/location. "
@@ -92,7 +91,8 @@ class StoryGenerator:
                     "model": "llama-3.3-70b-versatile",
                     "messages": [{"role": "user", "content": prompt}],
                     "max_tokens": words * 5,
-                    "temperature": 0.7
+                    "temperature": 1.2,
+                    "seed": random.randint(0, 1000000)
                 },
                 headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
                 timeout=60
@@ -277,12 +277,9 @@ class StoryGenerator:
             with open("genres.json", "r") as f:
                 self.genres = json.load(f)
         except FileNotFoundError:
-            self.genres = ["Horror", "Thriller", "Mystery", "Detective/Noir", "Fantasy", "Science Fiction",
-                           "Romance", "Historical Fiction", "Western", "Adventure", "Comedy", "Drama",
-                           "Fables", "Nursery Rhymes", "Fairy Tales", "Mythology", "Folklore", 
-                           "Satire", "Gothic", "Dystopian", "Utopian", "Steampunk", "Cyberpunk",
-                           "Urban Fantasy", "Dark Fantasy", "Epic Fantasy", "Paranormal", "Supernatural",
-                           "Crime", "Suspense", "Action", "War", "Espionage", "Literary Fiction","Vampires","Historical","Medieval","Pirates","Space Opera","Time Travel","Post-Apocalyptic","Magical Realism"]
+            self.genres = ["Horror", "Thriller", "Mystery", "Fantasy", "Science Fiction",
+                           "Romance", "Western", "Adventure", "Comedy", "Drama",
+                           "Action","Time Travel","Post-Apocalyptic","Magical Realism"]
             self.save_genres()
 
     def save_genres(self):
@@ -294,6 +291,18 @@ class StoryGenerator:
         window.title("Manage Genres")
         window.geometry("400x300")
         window.attributes("-topmost", True)  # Always on top
+        
+        # Center the window on the main window
+        window.update_idletasks()
+        main_x = self.root.winfo_x()
+        main_y = self.root.winfo_y()
+        main_width = self.root.winfo_width()
+        main_height = self.root.winfo_height()
+        popup_width = 400
+        popup_height = 300
+        x = main_x + (main_width - popup_width) // 2
+        y = main_y + (main_height - popup_height) // 2
+        window.geometry(f"400x300+{x}+{y}")
         
         # Listbox with scrollbar
         list_frame = tk.Frame(window, bg="#2b2b2b")
