@@ -70,10 +70,10 @@ class StoryGenerator:
 
         prompt = (f"Write a complete, original {genre.lower()} story that is up to {words} words long (count carefully). "
                   "CRITICAL: The story MUST have a proper ending - do not stop mid-sentence or mid-thought. "
-                  "Format with multiple paragraphs separated by blank lines (double newlines). "
+                  "Format with multiple paragraphs separated by blank lines (double newlines). Always include a title as the first line, with a blank line after it. "
                   "Start new paragraphs at natural breaks: scene changes, dialogue, shifts in time/location. "
                   "Use **bold** for strong emphasis and *italics* for thoughts or sounds. "
-                  "Strong plot, vivid characters, satisfying twist ending. Add a fitting title.")
+                  "Strong plot, vivid characters, satisfying ending.")
 
         self.story_text.delete("1.0", "end")
         self.story_text.insert("1.0", "Generating your story...")
@@ -89,9 +89,12 @@ class StoryGenerator:
                 "https://api.groq.com/openai/v1/chat/completions",
                 json={
                     "model": "llama-3.3-70b-versatile",
-                    "messages": [{"role": "user", "content": prompt}],
+                    "messages": [
+                        {"role": "system", "content": "You are a master storyteller with extensive experience in creative writing. Always create completely original stories with unique characters, plots, and settings. Focus on vivid descriptions, emotional depth, and engaging narratives that captivate readers."},
+                        {"role": "user", "content": prompt}
+                    ],
                     "max_tokens": words * 5,
-                    "temperature": 1.2,
+                    "temperature": 1.7, # Creative; anything less tends to reproduce similar stories
                     "seed": random.randint(0, 1000000)
                 },
                 headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
@@ -158,7 +161,7 @@ class StoryGenerator:
         path = filedialog.asksaveasfilename(
             initialfile=filename,
             defaultextension=".md",
-            filetypes=[("Markdown", "*.md"), ("RTF", "*.rtf"), ("DOCX", "*.docx"), ("Text", "*.txt"), ("PDF", "*.pdf")],
+            filetypes=[("DOCX", "*.docx"), ("Markdown", "*.md"), ("RTF", "*.rtf"), ("PDF", "*.pdf"), ("Text", "*.txt")],
             title="Save Story"
         )
 
