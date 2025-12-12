@@ -1,28 +1,8 @@
 # Story Generator
 
-A desktop application that generates creative stories using AI. Choose from various genres, set your desired word count, and get unique stories with proper formatting including bold text, italics, and paragraph breaks.
+A desktop application that generates creative stories using AI. Choose from various genres, set your desired word count, and get unique stories with proper formatting.
 
 ![Story Generator Screenshot](screenshot.png)
-
-## Features
-
-- 30+ story genres including Horror, Fantasy, Science Fiction, Romance, and many more
-- Customizable genre list - add, remove, and manage your own genres
-- Adjustable word count (100-1500 words) with 10-word increments
-- Stories formatted with **bold** emphasis and *italic* text for thoughts/sounds
-- Proper paragraph breaks for easy reading
-- Save generated stories in multiple formats: Markdown, RTF, DOCX, Text, or PDF
-- Vertical scrollbars in the story area when needed
-- Dark-themed modern UI with compact controls
-
-## Story Variety
-
-To ensure each generated story is unique and creative, the application uses advanced AI parameters:
-
-- **High Temperature Setting**: Configured at 1.2 for more imaginative and varied story outputs
-- **Random Seeds**: Each generation request includes a unique random seed, which helps the AI model produce different results even with similar prompts
-
-This combination helps prevent repetitive stories and provides fresh, original content each time you generate a new story.
 
 ## Prerequisites
 
@@ -40,8 +20,6 @@ This combination helps prevent repetitive stories and provides fresh, original c
    ```json
    {"api_key": "your_groq_api_key_here"}
    ```
-
-Groq offers free access to powerful language models with generous rate limits, perfect for this story generator.
 
 ## Installation
 
@@ -64,11 +42,7 @@ Groq offers free access to powerful language models with generous rate limits, p
    ```bash
    pip install -r requirements.txt
    ```
-   
-   Or manually:
-   ```bash
-   pip install customtkinter requests python-docx reportlab
-   ```
+
 4. Add your Groq API key to `api_key.json` (see above)
 
 ## Usage
@@ -102,24 +76,6 @@ Groq offers free access to powerful language models with generous rate limits, p
 5. Click "Generate Story"
 6. Optionally save the story in your preferred format (Markdown, RTF, DOCX, Text, or PDF)
 
-## Files
-
-- `main.pyw` - Main application file
-- `api_key.json` - Store your Groq API key here
-- `genres.json` - Customizable list of story genres
-- `requirements.txt` - Python dependencies
-- `README.md` - This file
-- `screenshot.png` - Application screenshot
-
-## Technologies Used
-
-- **customtkinter** - Modern UI framework for Python
-- **requests** - HTTP library for API calls
-- **python-docx** - Library for creating DOCX files
-- **reportlab** - Library for generating PDF files
-- **Groq API** - Fast, free AI inference using Llama 3.3 70B model
-- **Python 3** - Core programming language
-
 ## License
 
 IDGAF License
@@ -130,12 +86,12 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 **IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
 
-## Clear Conditions
+### Clear Conditions
 
-### Zero Requirement
+Zero Requirement
 You are granted all permissions without any conditions. You do not need to retain, reproduce, or include any copyright notice or a copy of this license when you redistribute the Software.
 
-### Total Waiver of Liability
+Total Waiver of Liability
 By choosing to use, copy, or modify the Software in any way, you are agreeing to completely and permanently release the original author(s) from all liability. If anything goes wrong, you are entirely responsible.
 
 ---
